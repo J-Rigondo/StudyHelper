@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs.mapper.loginMapper">
+	<select id="login_check" resultType="LoginVO">
+		select user_id,count(*) as count from member
+		where user_id=#{userId} and user_pw=#{userPw}
+	</select>	
+</mapper>

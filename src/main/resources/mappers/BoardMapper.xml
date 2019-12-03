@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbs.mapper.boardMapper">
+	<select id="getList" resultType="BoardVO">
+		select * from board join category on board.cate_no=category.cate_no
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="keyword != null and keyword != '' ">
+				<if test="searchType=='boardTitle'">
+					and board_title like concat('%', #{keyword}, '%')
+				</if>
+				<if test="searchType=='boardContent'">
+					and board_content like concat('%', #{keyword}, '%')
+				</if>
+				<if test="searchType=='userId'">
+					and user_id like concat('%', #{keyword}, '%')
+				</if>
+				<if test="searchType=='cateName'">
+					and cate_name like concat('%', #{keyword}, '%')
+				</if>
+      		</if>
+		</trim>
+		order by board_no desc
+		limit #{startList},#{listSize}	
+	</select>
+	
+	<select id="getListCnt" resultType="java.lang.Integer">
+		select count(*) as listCnt from board join category on board.cate_no=category.cate_no
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="keyword != null and keyword != '' ">
+				<if test="searchType=='boardTitle'">
+					and board_title like concat('%', #{keyword}, '%')
+				</if>
+				<if test="searchType=='boardContent'">
+					and board_content like concat('%', #{keyword}, '%')
+				</if>
+				<if test="searchType=='userId'">
+					and user_id like concat('%', #{keyword}, '%')
+				</if>
+				<if test="searchType=='cateName'">
+					and cate_name like concat('%', #{keyword}, '%')
+				</if>
+      		</if>
+		</trim>		
+	</select>
+	
+	<select id="readBoard" resultType="BoardVO">
+		select * from board
+		where board_no=#{boardNo} ;		
+	</select>
+	
+	<insert id="insertBoard">
+		insert into board(board_title,user_id,board_hit,board_date,board_content,cate_no)
+		values(#{boardTitle},#{userId},0,now(),#{boardContent},#{cateNo});
+	</insert>
+	
+	<delete id="deleteBoard">
+		delete from board
+		where board_no=#{boardNo};
+	</delete>
+	
+	<update id="updateBoard">
+		update board
+		set board_title=#{boardTitle}, board_content=#{boardContent}, board_date=now(), cate_no=#{cateNo}
+		where board_no=#{boardNo};
+	</update>
+	
+	<update id="hitUp">
+		update board
+		set board_hit=board_hit+1
+		where board_no=#{boardNo};
+	</update>
+</mapper>
